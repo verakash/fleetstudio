@@ -13,11 +13,7 @@ from .models import CustomerUser
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
-    class Meta:
-        model= CustomerUser
-        extra_kwargs= {'password':{'write_only': True}}
-        fields= ('name', 'email', 'phone', 'password'
-        ,'gender', 'is_active','is_staff', 'is_superuser')
+
 
     def create(self, validated_data):
         instance= self.Meta.model(**validated_data)
@@ -33,10 +29,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             else:
                 password= validated_data.pop('password', None)
                 if password is not None:
-                    if length(password) >7:
+                    if len(password) >7:
                         raise serializers.ValidationError({"error": "Password length should not be greater than 6"})
                     instance.set_password(password)
-                token= Token.objects.get(user=instance).key
-                instance['token']= token
                 instance.save()
                 return instance
+    class Meta:
+        model= CustomerUser
+        extra_kwargs= {'password':{'write_only': True}}
+        fields= ('name', 'email', 'phone', 'password'
+        , 'is_active','is_staff', 'is_superuser')
