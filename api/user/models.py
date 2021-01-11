@@ -9,14 +9,15 @@ from rest_framework.authtoken.models import Token
 
 class CustomerUser(AbstractUser):
     name= models.CharField(max_length=8 , default="Anonymous")
-    email=  models.CharField(max_length=250 ,unique= True)
+    email=  models.CharField(max_length=20 ,unique= True)
 
     username= None
 
     USERNAME_FIELD= 'email'
     REQUIRED_FIELDS= []
 
-    phone = models.CharField(max_length=10 ,blank= True, null= True)
+    # here max_length is 12 because of 2 hyphen to be added in the phone (ex. 991-900-4311)
+    phone = models.CharField(max_length=12 ,blank= True, null= True)
     session_token= models.CharField(max_length=10 ,default=0)
 
     created_at= models.DateTimeField(auto_now_add=True)
