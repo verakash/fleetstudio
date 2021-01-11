@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerUser
 from rest_framework.decorators import authentication_classes, permission_classes, api_view, renderer_classes
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
@@ -24,23 +23,7 @@ def generate_session_token(length= 10):
     tokens = ''.join(random.SystemRandom().choice([chr(i) for i in range(97,123)] + [str(i) for i in range(10)]) for _ in range(10))
     return tokens
 
-@api_view(['POST',])
-@csrf_exempt
-@renderer_classes((JSONRenderer))
-def registration_view(request):
 
-
-    if request.method == 'POST':
-        user_data= JSONParser().parse(request)
-        serializer = UserSerializer(data= user_data)
-        data={}
-        if serializer.is_valid():
-            useracc= serializer.save()
-            data['response']= "user successfully registered"
-            data['email']= useracc.email
-        # else:
-        #     raise serializers.ValidationError({"error": "Enter a valid email"})
-        return Response(data)
 
 
 # code for user login
@@ -56,8 +39,8 @@ def signin(request):
     if not re.match("[\w\.\+\-]+@[\w]+\.[a-z]{2,4}$", username):
         return JsonResponse({'error': "Enter a valid email"})
 
-    if len(password) < 7:
-        return JsonResponse({'error': 'Password should be atleast of length 7'})
+    if len(password) > 7:
+        return JsonResponse({'error': 'Password should be less than 6'})
 
     UserModel = get_user_model()
 
@@ -99,7 +82,7 @@ def signout(request, id):
         return JsonResponse({"error": "Invalid user ID"})
 
     return JsonResponse({'success': "logout success"})
-    
+
 # code for viewing user profile
 def view_profile(request, id):
     UserModel = get_user_model()

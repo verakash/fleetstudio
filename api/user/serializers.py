@@ -7,8 +7,6 @@ from django.http import JsonResponse
 UserModel= get_user_model()
 import re
 from django.core.exceptions import ValidationError
-from rest_framework.authtoken.models import Token
-from .models import CustomerUser
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,12 +26,21 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
             else:
                 password= validated_data.pop('password', None)
-                if password is not None:
+                if  re.match(r'[A-Za-z0-9#_-]', password):
                     if len(password) >7:
                         raise serializers.ValidationError({"error": "Password length should not be greater than 6"})
                     instance.set_password(password)
+
+                else:
+                    raise serializers.ValidationError({"error": "Password moust contain atleast one character, one number and any special character like #,-,_"})
                 instance.save()
                 return instance
+
+
+
+
+
+
     class Meta:
         model= CustomerUser
         extra_kwargs= {'password':{'write_only': True}}
