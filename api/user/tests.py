@@ -16,3 +16,5 @@ class UserTestCase(TestCase):
         obj2= CustomerUser.objects.get(email= "max@gmail.com" )
         self.assertEqual(obj1.email,"akash@gmail.com" )
         self.assertEqual(obj2.email, "max@gmail.com" )
+        self.assertEqual(obj1.password,"Akas#12" )
+        self.assertEqual(obj2.password, "Max#21" )
