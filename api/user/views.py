@@ -2,6 +2,7 @@ import random
 import re
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
+from django.contrib.auth.decorators import login_required
 from .serializers import UserSerializer
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model , login , logout
@@ -84,6 +85,7 @@ def signout(request, id):
     return JsonResponse({'success': "logout success"})
 
 # code for viewing user profile
+@login_required
 def view_profile(request, id):
     UserModel = get_user_model()
     try:
